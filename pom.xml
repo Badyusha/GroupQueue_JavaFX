@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>22.0.1</version>
+            <version>17.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -66,6 +66,13 @@
             <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--        encryption-->
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -88,7 +95,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>by.bsuir.groupqueuefx/by.bsuir.groupqueuefx.HelloApplication</mainClass>
+                            <mainClass>by.bsuir.groupqueuefx/by.bsuir.groupqueuefx.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

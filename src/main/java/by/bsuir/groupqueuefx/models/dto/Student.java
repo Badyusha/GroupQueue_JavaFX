@@ -17,6 +17,18 @@ public class Student {
 	private RoleType roleType;
 	private Long roleId;
 
+	public Student(String firstName,
+				   String lastName,
+				   String username,
+				   String password,
+				   Integer groupNumber) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+		this.groupNumber = groupNumber;
+	}
+
 	public Student(Long studentId,
 				   String firstName,
 				   String lastName,

@@ -1,6 +1,6 @@
 package by.bsuir.groupqueuefx.enums.entityAttributes;
 
-import by.bsuir.groupqueuefx.exceptions.DayOfWeekException;
+import by.bsuir.groupqueuefx.exceptions.entityExceptions.DayOfWeekException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

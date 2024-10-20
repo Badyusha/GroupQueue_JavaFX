@@ -20,4 +20,6 @@ public class QueueInfo {
 	private byte[] passingLabs;
 	private Integer numberInQueue;
 	private Long lessonId;
+	private String encryptedLessonId;
+	private String encryptedLessonIdSeed;
 }

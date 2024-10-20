@@ -1,5 +1,7 @@
 package by.bsuir.groupqueuefx.models.entities;
 
+import by.bsuir.groupqueuefx.models.dto.Student;
+import by.bsuir.groupqueuefx.utils.EncryptionUtil;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,4 +29,11 @@ public class PersonEntity {
 
 	@Column(name = "password", columnDefinition = "VARCHAR(65)")
 	private String password;
+
+	public PersonEntity(Student student) {
+		this.username = student.getUsername();
+		this.firstName = student.getFirstName();
+		this.lastName = student.getLastName();
+		this.password = EncryptionUtil.hashData(student.getPassword());
+	}
 }

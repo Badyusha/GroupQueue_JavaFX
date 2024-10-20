@@ -16,6 +16,7 @@ public class SpringFXMLLoader {
 		} catch (IOException ex) {
 			System.err.println("Cannot load resource " + fxmlPath);
 		}
+
 		return loader.getRoot();
 	}
 }

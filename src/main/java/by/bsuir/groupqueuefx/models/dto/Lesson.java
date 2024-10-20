@@ -3,6 +3,7 @@ package by.bsuir.groupqueuefx.models.dto;
 import by.bsuir.groupqueuefx.enums.entityAttributes.DayOfWeek;
 import by.bsuir.groupqueuefx.enums.entityAttributes.SubgroupType;
 import by.bsuir.groupqueuefx.enums.entityAttributes.WeekType;
+import by.bsuir.groupqueuefx.utils.EncryptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,6 +14,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class Lesson {
 	private long lessonId;
+	private String encryptedLessonId;
+	private String encryptedLessonIdSeed;
 	private String subjectName;
 	private String subjectFullName;
 	private SubgroupType subgroupType;
@@ -27,6 +30,8 @@ public class Lesson {
 	private boolean isRegistrationOpen;
 
 	public Lesson(long lessonId,
+				  String encryptedLessonId,
+				  String encryptedLessonIdSeed,
 				  String subjectName,
 				  String subjectFullName,
 				  SubgroupType subgroupType,
@@ -38,6 +43,8 @@ public class Lesson {
 				  LocalDate date,
 				  WeekType weekType) {
 		this.lessonId = lessonId;
+		this.encryptedLessonId = encryptedLessonId;
+		this.encryptedLessonIdSeed = encryptedLessonIdSeed;
 		this.subjectName = subjectName;
 		this.subjectFullName = subjectFullName;
 		this.subgroupType = subgroupType;
@@ -48,5 +55,11 @@ public class Lesson {
 		this.dayOfWeek = dayOfWeek;
 		this.date = date;
 		this.weekType = weekType;
+	}
+
+	public void encryptId() {
+		Pair<String, String> encryptedIdAndSeed = EncryptionUtil.encrypt(this.lessonId);
+		this.encryptedLessonId = encryptedIdAndSeed.getFirst();
+		this.encryptedLessonIdSeed = encryptedIdAndSeed.getSecond();
 	}
 }

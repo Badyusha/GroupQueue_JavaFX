@@ -1,7 +1,7 @@
 package by.bsuir.groupqueuefx.enums.entityAttributes;
 
 import by.bsuir.groupqueuefx.external.api.BsuirAPI;
-import by.bsuir.groupqueuefx.exceptions.WeekTypeException;
+import by.bsuir.groupqueuefx.exceptions.entityExceptions.WeekTypeException;
 
 public enum WeekType {
 	FIRST,

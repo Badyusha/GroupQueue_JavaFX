@@ -1,17 +1,30 @@
 package by.bsuir.groupqueuefx.utils;
 
+import by.bsuir.groupqueuefx.models.dto.Lesson;
+import by.bsuir.groupqueuefx.models.dto.Pair;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 public class EncryptionUtil {
-	public static int[] convertByteArrayToIntArray(byte[] byteArray) {
-		int[] intArray = new int[byteArray.length];
-		for (int i = 0; i < byteArray.length; i++) {
-			intArray[i] = byteArray[i] & 0xFF;
-		}
-		return intArray;
+	public static <T> Pair<String, String> encrypt(T data) {
+		Double seed = new Random().nextDouble(7);
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(seed.toString());
+
+		String encryptedData = encryptor.encrypt(data.toString());
+		return new Pair<>(encryptedData, seed.toString());
+	}
+
+	public static String decrypt(String data, String seed) {
+		System.out.println("DATA: " + data);
+		System.out.println("SEED: " + seed);
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(seed);
+		return encryptor.decrypt(data);
 	}
 
 	// cipher method
@@ -25,5 +38,19 @@ public class EncryptionUtil {
 		}
 		byte[] resultByteArray = messageDigest.digest(message.getBytes());
 		return (new BigInteger(1, resultByteArray)).toString(16);
+	}
+
+	public static void encryptLessonId(Lesson lesson) {
+		Pair<String, String> encryptedIdAndSeed = encrypt(lesson.getLessonId());
+		lesson.setEncryptedLessonId(encryptedIdAndSeed.getFirst());
+		lesson.setEncryptedLessonIdSeed(encryptedIdAndSeed.getSecond());
+	}
+
+	public static int[] convertByteArrayToIntArray(byte[] byteArray) {
+		int[] intArray = new int[byteArray.length];
+		for (int i = 0; i < byteArray.length; i++) {
+			intArray[i] = byteArray[i] & 0xFF;
+		}
+		return intArray;
 	}
 }

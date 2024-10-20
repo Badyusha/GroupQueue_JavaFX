@@ -1,6 +1,6 @@
 package by.bsuir.groupqueuefx.external.api;
 
-import by.bsuir.groupqueuefx.exceptions.ScheduleException;
+import by.bsuir.groupqueuefx.exceptions.entityExceptions.ScheduleException;
 import by.bsuir.groupqueuefx.models.entities.ScheduleEntity;
 import by.bsuir.groupqueuefx.enums.entityAttributes.DayOfWeek;
 import by.bsuir.groupqueuefx.enums.entityAttributes.SubgroupType;
@@ -67,11 +67,11 @@ public class BsuirAPI {
 
 
 	public static boolean isGroupExist(int groupNumber) {
-		return checkRequest(GROUP_SCHEDULE_URL + groupNumber);
+		return isRequestFail(GROUP_SCHEDULE_URL + groupNumber);
 	}
 
 
-	private static boolean checkRequest(String uri) {
+	private static boolean isRequestFail(String uri) {
 		try {
 			URL url = new URI(uri).toURL();
 			IOUtils.toString(url, StandardCharsets.UTF_8);

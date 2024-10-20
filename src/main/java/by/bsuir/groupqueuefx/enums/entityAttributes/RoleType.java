@@ -1,6 +1,6 @@
 package by.bsuir.groupqueuefx.enums.entityAttributes;
 
-import by.bsuir.groupqueuefx.exceptions.RoleTypeException;
+import by.bsuir.groupqueuefx.exceptions.entityExceptions.RoleTypeException;
 
 public enum RoleType {
 	USER,
