@@ -1,5 +1,6 @@
 package by.bsuir.groupqueuefx.services;
 
+import by.bsuir.groupqueuefx.controllers.SignUpController;
 import by.bsuir.groupqueuefx.exceptions.AuthorizationException;
 import by.bsuir.groupqueuefx.exceptions.EmptyObjectException;
 import by.bsuir.groupqueuefx.exceptions.GroupNotExistsException;
@@ -23,27 +24,25 @@ public class RegistrationService {
 	private final ScheduleService scheduleService;
 	private final StudentRepository studentRepository;
 
-	public void registerUser(TextField firstNameTextField,
-							 TextField lastNameTextField,
-							 TextField groupNumberTextField,
-							 TextField usernameTextField,
-							 TextField passwordTextField,
-							 TextField repeatedPasswordTextField) throws EmptyObjectException,
-			GroupNotExistsException,
-			AuthorizationException {
-		List<TextField> textFields = List.of(firstNameTextField,
-				lastNameTextField,
-				groupNumberTextField,
-				usernameTextField,
-				passwordTextField,
-				repeatedPasswordTextField);
+	public void registerStudent(Student student, String repeatedPassword) throws EmptyObjectException,
+															GroupNotExistsException,
+															AuthorizationException {
+		String firstName = student.getFirstName();
+		String lastName = student.getLastName();
+		Integer groupNumber = student.getGroupNumber();
+		String username = student.getUsername();
+		String password = student.getPassword();
+
+		List<String> textFields = List.of(firstName,
+											lastName,
+											username,
+											password,
+											repeatedPassword);
 		if(isTextFieldEmpty(textFields)) {
 			throw new EmptyObjectException("Some fields on Registration page are empty");
 		}
 
-		int groupNumber = 0;
 		try {
-			groupNumber = Integer.parseInt(groupNumberTextField.getText());
 			if(!BsuirAPI.isGroupExist(groupNumber)) {
 				throw new GroupNotExistsException("Group " + groupNumber + " does not exist");
 			}
@@ -51,29 +50,23 @@ public class RegistrationService {
 			throw new GroupNotExistsException("Group number is invalid");
 		}
 
-		if(studentRepository.isUsernameExist(usernameTextField.getText())) {
+		if(studentRepository.isUsernameExist(username)) {
 			throw new AuthorizationException("Username is already in use");
 		}
 
-		if(!passwordTextField.getText().equals(repeatedPasswordTextField.getText())) {
+		if(!password.equals(repeatedPassword)) {
 			throw new PasswordsNotMatchesException("Passwords do not match");
 		}
 
 		registerGroup(groupNumber);
-
-		Student student = new Student(firstNameTextField.getText(),
-									lastNameTextField.getText(),
-									usernameTextField.getText(),
-									passwordTextField.getText(),
-									groupNumber);
-		registerStudent(student);
+		register(student);
 	}
 
-	private boolean isTextFieldEmpty(List<TextField> textFields) {
-		return textFields.stream().anyMatch(textField -> textField.getText().isEmpty());
+	private boolean isTextFieldEmpty(List<String> textFields) {
+		return textFields.stream().anyMatch(textField -> textField.isEmpty());
 	}
 
-	public void registerStudent(Student student) {
+	public void register(Student student) {
 		long groupId = groupRepository.getGroupIdByNumber(student.getGroupNumber());
 		student.setGroupId(groupId);
 		studentService.saveStudent(student);

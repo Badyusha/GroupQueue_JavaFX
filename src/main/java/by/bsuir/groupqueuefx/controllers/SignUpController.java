@@ -4,6 +4,7 @@ import by.bsuir.groupqueuefx.exceptions.AuthorizationException;
 import by.bsuir.groupqueuefx.exceptions.EmptyObjectException;
 import by.bsuir.groupqueuefx.exceptions.GroupNotExistsException;
 import by.bsuir.groupqueuefx.exceptions.PasswordsNotMatchesException;
+import by.bsuir.groupqueuefx.models.dto.Student;
 import by.bsuir.groupqueuefx.services.RegistrationService;
 import by.bsuir.groupqueuefx.utils.WindowManager;
 import javafx.fxml.FXML;
@@ -13,12 +14,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RegistrationController {
+@Getter
+public class SignUpController {
     private final RegistrationService registrationService;
 
     @FXML
@@ -63,21 +66,21 @@ public class RegistrationController {
     @FXML
     void register(MouseEvent event) {
         try {
-            registrationService.registerUser(firstName,
-                                            lastName,
-                                            groupNumber,
-                                            username,
-                                            password,
-                                            repeatedPassword);
+            registrationService.registerStudent(this.toStudent(), repeatedPassword.getText());
         } catch(EmptyObjectException e) {
-            statusLabel.setText("Some fields are empty");
+            statusLabel.setText("Некоторые поля не заполнены");
+            return;
         } catch (GroupNotExistsException e) {
-            statusLabel.setText("Group does not exist");
+            statusLabel.setText("Группа с таким номером не существует");
+            return;
         } catch(PasswordsNotMatchesException e) {
-            statusLabel.setText("Passwords does not match");
+            statusLabel.setText("Пароли не совпадают");
+            return;
         } catch(AuthorizationException e) {
-            statusLabel.setText("Username is already in use");
+            statusLabel.setText("Имя пользователя уже занято");
+            return;
         }
+        System.out.println("Student " + username.getText() + " successfully registered");
     }
 
     @FXML
@@ -103,6 +106,20 @@ public class RegistrationController {
         assert signUpButton != null : "fx:id=\"signUpButton\" was not injected: check your FXML file 'Untitled'.";
         assert statusLabel != null : "fx:id=\"statusLabel\" was not injected: check your FXML file 'Untitled'.";
         assert username != null : "fx:id=\"username\" was not injected: check your FXML file 'Untitled'.";
+    }
 
+    public Student toStudent() throws EmptyObjectException {
+        int groupNumber = 0;
+        try {
+            groupNumber = Integer.parseInt(this.groupNumber.getText());
+        } catch(NumberFormatException e) {
+            throw new EmptyObjectException("Cannot parse group number to String");
+        }
+
+        return new Student(this.firstName.getText(),
+                            this.lastName.getText(),
+                            this.username.getText(),
+                            this.password.getText(),
+                            groupNumber);
     }
 }
