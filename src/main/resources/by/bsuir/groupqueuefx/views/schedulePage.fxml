@@ -17,7 +17,6 @@
             <Label styleClass="registration-info" text="Registration is available from 22:00 the day before lab until an hour before lab starts" />
         </VBox>
 
-        <!-- HBox to contain each day's schedule -->
         <HBox fx:id="weekScheduleHBox" styleClass="week-schedule-hbox" HBox.hgrow="ALWAYS">
             <VBox fx:id="mondayContainer" styleClass="day-schedule-container">
                 <!--       lesson cards         -->

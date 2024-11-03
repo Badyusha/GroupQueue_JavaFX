@@ -1,21 +1,17 @@
 package by.bsuir.groupqueuefx.controllers;
 
-import by.bsuir.groupqueuefx.enums.entityAttributes.DayOfWeek;
 import by.bsuir.groupqueuefx.models.dto.DayOfWeekScheduled;
 import by.bsuir.groupqueuefx.models.dto.Lesson;
 import by.bsuir.groupqueuefx.models.dto.Schedule;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class ScheduleController {
@@ -127,8 +123,8 @@ public class ScheduleController {
 
     public void hideSideMenu() {
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), sideMenu);
-        slideOut.setFromX(0); // Current position
-        slideOut.setToX(-sideMenu.getWidth()); // Move off the screen
+        slideOut.setFromX(0);
+        slideOut.setToX(-sideMenu.getWidth());
         slideOut.setOnFinished(event -> {
             sideMenu.setVisible(false);
             isMenuVisible = false;
@@ -137,6 +133,6 @@ public class ScheduleController {
     }
 
     public void showDeleteAccountForm(MouseEvent mouseEvent) {
-        // Implementation for showing delete account form
+        // implementation ...
     }
 }
