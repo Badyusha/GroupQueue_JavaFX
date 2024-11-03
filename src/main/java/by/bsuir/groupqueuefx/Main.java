@@ -25,7 +25,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		Parent root = SpringFXMLLoader.load(springContext, SpringBootApplication.class, "main-page.fxml");
+		Parent root = SpringFXMLLoader.load(springContext, SpringBootApplication.class, "views/authorizationPage.fxml");
 		stage.setScene(new Scene(root, 600, 400));
 		stage.setTitle("GroupQueue");
 		stage.setResizable(false);

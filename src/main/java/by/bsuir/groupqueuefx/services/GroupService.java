@@ -20,4 +20,8 @@ public class GroupService {
 	public boolean isGroupExist(int groupNumber) {
 		return groupRepository.isGroupExist(groupNumber);
 	}
+
+	public Long getGroupIdByNumber(int groupNumber) {
+		return groupRepository.getGroupIdByNumber(groupNumber);
+	}
 }

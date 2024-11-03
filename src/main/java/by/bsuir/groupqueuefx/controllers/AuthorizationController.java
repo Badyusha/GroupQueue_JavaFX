@@ -1,13 +1,16 @@
 package by.bsuir.groupqueuefx.controllers;
 
+import by.bsuir.groupqueuefx.models.dto.Pair;
 import by.bsuir.groupqueuefx.utils.WindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MainPageController {
+@RequiredArgsConstructor
+public class AuthorizationController {
     @FXML
     private Button exitButton;
 
@@ -24,12 +27,22 @@ public class MainPageController {
 
     @FXML
     void signIn(MouseEvent event) {
-        WindowManager.generateWindow("signIn.fxml", "Authorization", event);
+        WindowManager.generateWindow("views/signIn.fxml",
+                                    "Authorization",
+                                    false,
+                                    false,
+                                    new Pair<>(600, 400),
+                                    event);
     }
 
     @FXML
     void signUp(MouseEvent event) {
-        WindowManager.generateWindow("signUp.fxml", "Registration", event);
+        WindowManager.generateWindow("views/signUp.fxml",
+                                    "Registration",
+                                    false,
+                                    false,
+                                    new Pair<>(600, 400),
+                                    event);
     }
 
     @FXML

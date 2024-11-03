@@ -4,6 +4,7 @@ import by.bsuir.groupqueuefx.exceptions.AuthorizationException;
 import by.bsuir.groupqueuefx.exceptions.EmptyObjectException;
 import by.bsuir.groupqueuefx.exceptions.GroupNotExistsException;
 import by.bsuir.groupqueuefx.exceptions.PasswordsNotMatchesException;
+import by.bsuir.groupqueuefx.models.dto.Pair;
 import by.bsuir.groupqueuefx.models.dto.Student;
 import by.bsuir.groupqueuefx.services.RegistrationService;
 import by.bsuir.groupqueuefx.utils.WindowManager;
@@ -85,7 +86,12 @@ public class SignUpController {
 
     @FXML
     void signIn(MouseEvent event) {
-        WindowManager.generateWindow("signIn.fxml", "Authorization", event);
+        WindowManager.generateWindow("views/signIn.fxml",
+                                    "Authorization",
+                                    false,
+                                    false,
+                                    new Pair<>(600, 400),
+                                    event);
     }
 
     @FXML

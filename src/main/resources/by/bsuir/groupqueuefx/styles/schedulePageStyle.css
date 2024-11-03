@@ -1,0 +1,40 @@
+/* Styles for the day columns */
+.day-schedule-column {
+    -fx-padding: 10;
+}
+
+.day-schedule-container {
+    -fx-spacing: 10px;           /* Space between each lesson card */
+    -fx-padding: 10px;           /* Padding for the container itself */
+}
+
+/* Card style for each lesson */
+.lesson-card {
+    -fx-background-color: #333333; /* Card background color */
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+}
+
+
+/* Text styling for lesson details */
+.subject-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.subgroup-info,
+.start-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #CCCCCC;
+}
+
+.registered {
+    -fx-text-fill: #4CAF50; /* Green for registered */
+}
+
+.not-registered {
+    -fx-text-fill: #FF5252; /* Red for not registered */
+}

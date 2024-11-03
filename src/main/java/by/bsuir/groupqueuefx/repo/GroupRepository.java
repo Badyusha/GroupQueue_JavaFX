@@ -15,4 +15,6 @@ public interface GroupRepository extends CrudRepository<GroupEntity, Long> {
 	default boolean isGroupExist(Integer groupNumber) {
 		return getGroupIdByNumber(groupNumber) != null;
 	}
+
+
 }

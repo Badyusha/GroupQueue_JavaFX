@@ -6,6 +6,7 @@ import by.bsuir.groupqueuefx.enums.entityAttributes.WeekType;
 import by.bsuir.groupqueuefx.utils.EncryptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

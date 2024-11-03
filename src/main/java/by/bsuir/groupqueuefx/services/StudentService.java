@@ -54,6 +54,10 @@ public class StudentService {
 		return studentRepository.getIdByUsername(student.getUsername());
 	}
 
+	public StudentEntity getStudentByUsername(String username) {
+		return studentRepository.getStudentByUsername(username);
+	}
+
 	public boolean isStudentExistByUsernamePassword(Student student) {
 		return studentRepository.isStudentExistByUsernamePassword(student.getUsername(),
 															EncryptionUtil.hashData(student.getPassword()));

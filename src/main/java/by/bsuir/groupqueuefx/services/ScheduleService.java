@@ -1,5 +1,6 @@
 package by.bsuir.groupqueuefx.services;
 
+import by.bsuir.groupqueuefx.controllers.ScheduleController;
 import by.bsuir.groupqueuefx.enums.entityAttributes.DayOfWeek;
 import by.bsuir.groupqueuefx.enums.entityAttributes.WeekType;
 import by.bsuir.groupqueuefx.exceptions.entityExceptions.ScheduleException;
@@ -9,9 +10,11 @@ import by.bsuir.groupqueuefx.models.dto.GroupSchedule;
 import by.bsuir.groupqueuefx.models.dto.Lesson;
 import by.bsuir.groupqueuefx.models.dto.Schedule;
 import by.bsuir.groupqueuefx.models.entities.ScheduleEntity;
+import by.bsuir.groupqueuefx.models.entities.StudentEntity;
 import by.bsuir.groupqueuefx.repo.GroupRepository;
 import by.bsuir.groupqueuefx.repo.ScheduleRepository;
 import by.bsuir.groupqueuefx.utils.GenerateQueueUtil;
+import by.bsuir.groupqueuefx.utils.fabrics.SpringBeanControllerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,16 @@ public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 	private final GroupRepository groupRepository;
 	private final LessonService lessonService;
+	private final StudentService studentService;
+
+	public void populateScheduleTable(String username) {
+		ScheduleController controller = SpringBeanControllerFactory.getSpringContext().getBean(ScheduleController.class);
+		if (controller != null) {
+			StudentEntity student = studentService.getStudentByUsername(username);
+			Schedule schedule = getDayOfWeekSchedule(student.getId(), student.getGroupId());
+			controller.populateScheduleTable(schedule);
+		}
+	}
 
 	public List<GroupSchedule> getGroupSchedulesByGroupId(long groupId) {
 		return scheduleRepository.getGroupSchedulesByGroupId(groupId);
