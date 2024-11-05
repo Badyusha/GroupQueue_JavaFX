@@ -16,7 +16,12 @@
     <groupId>by.bsuir</groupId>
     <artifactId>GroupQueueFX</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>GroupQueueFX</name>
+    <modules>
+        <module>client</module>
+        <module>server</module>
+    </modules>
 
     <properties>
         <java.version>17</java.version>
@@ -95,7 +100,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>by.bsuir.groupqueuefx/by.bsuir.groupqueuefx.Main</mainClass>
+                            <mainClass>by.bsuir.groupqueuefx/by.bsuir.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
