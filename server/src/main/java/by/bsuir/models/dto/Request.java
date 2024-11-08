@@ -5,9 +5,11 @@ import by.bsuir.enums.entityAttributes.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class Request {
+public class Request implements Serializable {
 	private long studentId;
 	private String lastName;
 	private String firstName;

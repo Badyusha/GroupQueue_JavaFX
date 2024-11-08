@@ -5,12 +5,13 @@ import by.bsuir.enums.entityAttributes.SubgroupType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class QueueInfo {
+public class QueueInfo implements Serializable {
 	private String subjectName;
 	private String subjectFullName;
 	private LocalDate date;

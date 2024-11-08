@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.bsuir.controllers.ConfirmationDialogController">
+    <GridPane hgap="10" vgap="10">
+        <Label text="Subject Name:"/>
+        <TextField fx:id="subjectName" GridPane.columnIndex="1"/>
+
+        <Label text="Start Time:" GridPane.rowIndex="1"/>
+        <TextField fx:id="startTime" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Subgroup:" GridPane.rowIndex="2"/>
+        <TextField fx:id="subgroup" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Passing Labs:" GridPane.rowIndex="3"/>
+        <TextField fx:id="passingLabs" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Register" fx:id="registerButton" onAction="#handleRegister"/>
+        <Button text="Cancel" fx:id="cancelButton" onAction="#handleCancel"/>
+    </HBox>
+</VBox>

@@ -5,9 +5,11 @@ import by.bsuir.enums.entityAttributes.WeekType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @RequiredArgsConstructor
-public class Schedule {
+public class Schedule implements Serializable {
 	private DayOfWeekScheduled monday;
 	private DayOfWeekScheduled tuesday;
 	private DayOfWeekScheduled wednesday;

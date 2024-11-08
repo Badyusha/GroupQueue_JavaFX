@@ -21,7 +21,7 @@ public class PreQueueService {
 		preQueueRepository.delete(preQueueRepository.getPreQueueEntityByStudentIdLessonId(studentId, lessonId));
 	}
 
-	public void addStudentToPreQueue(long studentId, PreQueue preQueue) {
+	public void addStudentToPreQueue(long studentId, PreQueue preQueue) throws QueueException {
 		LocalTime startTime = LocalTime.parse(preQueue.getStartTime());
 		DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeekByName(preQueue.getDayOfWeek());
 

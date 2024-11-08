@@ -1,4 +1,4 @@
-package by.bsuir.tcp_ip;
+package by.bsuir.tcp;
 
 public class ServerSocketInfo {
     public static final String HOST = "127.0.0.1";

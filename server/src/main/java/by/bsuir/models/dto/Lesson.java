@@ -7,12 +7,13 @@ import by.bsuir.utils.EncryptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class Lesson {
+public class Lesson implements Serializable {
 	private long lessonId;
 	private String encryptedLessonId;
 	private String encryptedLessonIdSeed;

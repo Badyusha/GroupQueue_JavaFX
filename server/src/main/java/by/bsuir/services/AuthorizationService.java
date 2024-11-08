@@ -3,7 +3,6 @@ package by.bsuir.services;
 
 import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.models.dto.Student;
-import by.bsuir.utils.StudentSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ public class AuthorizationService {
 	public void authorizeStudent(Student student) throws AuthorizationException {
 		studentExists(student);
 		studentService.fillInStudent(student);
-		StudentSession.getInstance().setUpFields(student.getStudentId(), student.getGroupId());
 	}
 
 	private void studentExists(Student student) throws AuthorizationException {

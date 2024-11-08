@@ -1,8 +1,13 @@
 package by.bsuir.controllers;
 
+import by.bsuir.enums.RegistrationState;
+import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.exceptions.EmptyObjectException;
+import by.bsuir.exceptions.GroupNotExistsException;
+import by.bsuir.exceptions.PasswordsNotMatchesException;
 import by.bsuir.models.dto.Pair;
 import by.bsuir.models.dto.Student;
+import by.bsuir.services.SignUpService;
 import by.bsuir.utils.WindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -14,6 +19,8 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -61,22 +68,23 @@ public class SignUpController {
 
     @FXML
     void register(MouseEvent event) {
-//        try {
-//            registrationService.registerStudent(this.toStudent(), repeatedPassword.getText());
-//        } catch(EmptyObjectException e) {
-//            statusLabel.setText("Некоторые поля не заполнены");
-//            return;
-//        } catch (GroupNotExistsException e) {
-//            statusLabel.setText("Группа с таким номером не существует");
-//            return;
-//        } catch(PasswordsNotMatchesException e) {
-//            statusLabel.setText("Пароли не совпадают");
-//            return;
-//        } catch(AuthorizationException e) {
-//            statusLabel.setText("Имя пользователя уже занято");
-//            return;
-//        }
-//        System.out.println("Student " + username.getText() + " successfully registered");
+        RegistrationState registrationState = null;
+        try {
+            registrationState = SignUpService.registerStudent(this.toStudent());
+            if(!registrationState.equals(RegistrationState.OK)) {
+                SignUpService.setUpErrorLabel(registrationState, statusLabel);
+                return;
+            }
+        } catch (Exception e) {
+            statusLabel.setText("Ошибка чтения данных сервера");
+            return;
+        }
+        WindowManager.generateWindow("/views/schedulePage.fxml",
+                "Schedule",
+                false,
+                true,
+                new Pair<>(650, 400),
+                event);
     }
 
     @FXML
@@ -114,13 +122,14 @@ public class SignUpController {
         try {
             groupNumber = Integer.parseInt(this.groupNumber.getText());
         } catch(NumberFormatException e) {
-            throw new EmptyObjectException("Cannot parse group number to String");
+            //
         }
 
         return new Student(this.firstName.getText(),
                             this.lastName.getText(),
                             this.username.getText(),
                             this.password.getText(),
+                            this.repeatedPassword.getText(),
                             groupNumber);
     }
 }

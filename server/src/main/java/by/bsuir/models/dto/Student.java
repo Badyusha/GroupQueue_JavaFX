@@ -4,13 +4,16 @@ import by.bsuir.models.entities.StudentEntity;
 import by.bsuir.enums.entityAttributes.RoleType;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Student {
+public class Student implements Serializable {
 	private Long studentId;
 	private String firstName;
 	private String lastName;
 	private String username;
 	private String password;
+	private String repeatedPassword;
 	private Long groupId;
 	private Long personId;
 	private Integer groupNumber;
@@ -21,11 +24,13 @@ public class Student {
 				   String lastName,
 				   String username,
 				   String password,
+				   String repeatedPassword,
 				   Integer groupNumber) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
+		this.repeatedPassword = repeatedPassword;
 		this.groupNumber = groupNumber;
 	}
 

@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+
 @RequiredArgsConstructor
 public class AuthorizationController {
     @FXML
@@ -19,7 +21,7 @@ public class AuthorizationController {
     private Button signUpButton;
 
     @FXML
-    void exit(MouseEvent event) {
+    void exit(MouseEvent event) throws IOException {
         WindowManager.closeWindow(event);
     }
 
@@ -35,7 +37,7 @@ public class AuthorizationController {
 
     @FXML
     void signUp(MouseEvent event) {
-        WindowManager.generateWindow("/client/src/main/resources/views/signUp.fxml",
+        WindowManager.generateWindow("/views/signUp.fxml",
                                     "Registration",
                                     false,
                                     false,
@@ -48,6 +50,5 @@ public class AuthorizationController {
         assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'Untitled'.";
         assert signInButton != null : "fx:id=\"signInButton\" was not injected: check your FXML file 'Untitled'.";
         assert signUpButton != null : "fx:id=\"signUpButton\" was not injected: check your FXML file 'Untitled'.";
-
     }
 }

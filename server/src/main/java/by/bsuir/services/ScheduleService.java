@@ -5,10 +5,7 @@ import by.bsuir.api.BsuirAPI;
 import by.bsuir.enums.entityAttributes.DayOfWeek;
 import by.bsuir.enums.entityAttributes.WeekType;
 import by.bsuir.exceptions.entityExceptions.ScheduleException;
-import by.bsuir.models.dto.DayOfWeekScheduled;
-import by.bsuir.models.dto.GroupSchedule;
-import by.bsuir.models.dto.Lesson;
-import by.bsuir.models.dto.Schedule;
+import by.bsuir.models.dto.*;
 import by.bsuir.models.entities.ScheduleEntity;
 import by.bsuir.repo.GroupRepository;
 import by.bsuir.repo.ScheduleRepository;
@@ -28,15 +25,6 @@ public class ScheduleService {
 	private final GroupRepository groupRepository;
 	private final LessonService lessonService;
 	private final StudentService studentService;
-
-//	public void populateScheduleTable(String username) {
-//		ScheduleController controller = SpringBeanControllerFactory.getSpringContext().getBean(ScheduleController.class);
-//		if (controller != null) {
-//			StudentEntity student = studentService.getStudentByUsername(username);
-//			Schedule schedule = getDayOfWeekSchedule(student.getId(), student.getGroupId());
-//			controller.populateScheduleTable(schedule);
-//		}
-//	}
 
 	public List<GroupSchedule> getGroupSchedulesByGroupId(long groupId) {
 		return scheduleRepository.getGroupSchedulesByGroupId(groupId);

@@ -1,9 +1,7 @@
 package by.bsuir.services;
 
 import by.bsuir.api.BsuirAPI;
-import by.bsuir.exceptions.AuthorizationException;
-import by.bsuir.exceptions.EmptyObjectException;
-import by.bsuir.exceptions.GroupNotExistsException;
+import by.bsuir.enums.RegistrationState;
 import by.bsuir.exceptions.PasswordsNotMatchesException;
 import by.bsuir.models.dto.Student;
 import by.bsuir.models.entities.GroupEntity;
@@ -22,9 +20,7 @@ public class RegistrationService {
 	private final ScheduleService scheduleService;
 	private final StudentRepository studentRepository;
 
-	public void registerStudent(Student student, String repeatedPassword) throws EmptyObjectException,
-															GroupNotExistsException,
-															AuthorizationException {
+	public RegistrationState registerStudent(Student student, String repeatedPassword) {
 		String firstName = student.getFirstName();
 		String lastName = student.getLastName();
 		Integer groupNumber = student.getGroupNumber();
@@ -37,27 +33,26 @@ public class RegistrationService {
 											password,
 											repeatedPassword);
 		if(isTextFieldEmpty(textFields)) {
-			throw new EmptyObjectException("Some fields on Registration page are empty");
+			return RegistrationState.EMPTY_FIELDS;
 		}
 
-		try {
-			if(!BsuirAPI.isGroupExist(groupNumber)) {
-				throw new GroupNotExistsException("Group " + groupNumber + " does not exist");
-			}
-		} catch (NumberFormatException e) {
-			throw new GroupNotExistsException("Group number is invalid");
+		if(!groupRepository.isGroupExist(groupNumber) &&
+			!BsuirAPI.isGroupExist(groupNumber)) {
+			return RegistrationState.GROUP_NOT_EXISTS;
 		}
 
 		if(studentRepository.isUsernameExist(username)) {
-			throw new AuthorizationException("Username is already in use");
+			return RegistrationState.USERNAME_EXISTS;
 		}
 
 		if(!password.equals(repeatedPassword)) {
-			throw new PasswordsNotMatchesException("Passwords do not match");
+			return RegistrationState.PASSWORDS_NOT_MATCHES;
 		}
 
 		registerGroup(groupNumber);
 		register(student);
+
+		return RegistrationState.OK;
 	}
 
 	private boolean isTextFieldEmpty(List<String> textFields) {

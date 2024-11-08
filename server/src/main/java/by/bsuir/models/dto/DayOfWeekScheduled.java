@@ -4,12 +4,13 @@ import by.bsuir.enums.entityAttributes.DayOfWeek;
 import by.bsuir.enums.entityAttributes.WeekType;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class DayOfWeekScheduled {
+public class DayOfWeekScheduled implements Serializable {
 	private LocalDate date;
 	private List<Lesson> lessons;
 

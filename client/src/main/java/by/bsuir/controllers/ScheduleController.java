@@ -1,21 +1,24 @@
 package by.bsuir.controllers;
 
-import by.bsuir.models.dto.DayOfWeekScheduled;
-import by.bsuir.models.dto.Lesson;
-import by.bsuir.models.dto.Schedule;
+import by.bsuir.MainClient;
+import by.bsuir.models.dto.*;
+import by.bsuir.services.ScheduleService;
 import by.bsuir.utils.StudentSession;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.RequiredArgsConstructor;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -43,8 +46,17 @@ public class ScheduleController {
     @FXML
     private VBox sundayContainer;
 
-    public void initialize() {
+    public void initialize() throws IOException, ClassNotFoundException {
         sideMenu.setVisible(false);
+        Schedule schedule = ScheduleService.getSchedule();
+        if(schedule != null) {
+            populateScheduleTable(ScheduleService.getSchedule());
+            return;
+        }
+        JOptionPane.showMessageDialog(null,
+                "Проверьте подключение к интернету",
+                "Connection error",
+                JOptionPane.ERROR_MESSAGE);
     }
 
     public void populateScheduleTable(Schedule schedule) {
@@ -99,21 +111,22 @@ public class ScheduleController {
         Button registrationButton = new Button();
         registrationButton.setVisible(false);
         Integer numberInQueue = lesson.getNumberInQueue();
+
         if(lesson.isRegistrationOpen()) {
             registrationButton = new Button("Register");
             registrationButton.setVisible(true);
 
             registrationButton.setOnAction(event -> {
-                registerStudentToQueue(lesson.getLessonId());
+                registerStudentToQueue(lesson);
             });
-        } else if(lesson.isRegisteredInQueue()) {
+        } if(lesson.isRegisteredInQueue()) {
             registrationButton = new Button("Registered\nLeave?");
             registrationButton.setVisible(true);
 
             registrationButton.setOnAction(event -> {
                 removeStudentFromQueue(lesson.getLessonId());
             });
-        } else if(numberInQueue != null) {
+        } if(numberInQueue != null) {
             registrationButton = new Button("You are " + numberInQueue + " in Q");
             registrationButton.setVisible(true);
 
@@ -167,15 +180,34 @@ public class ScheduleController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         Optional<ButtonType> result = alert.showAndWait();
         if(result.get() == ButtonType.OK) {
-            StudentSession.getInstance().setStudentId(4);
-//            preQueueService.
-//                    removeStudentFromPreQueueByLessonId(StudentSession.getInstance().getStudentId(), lessonId);
+            long studentId = StudentSession.getInstance().getStudentId();
+            ScheduleService.removeStudentFromQueue(studentId, lessonId);
         }
         // TODO
         // update schedule
     }
 
-    private void registerStudentToQueue(long lessonId) {
+    private void registerStudentToQueue(Lesson lesson) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MainClient.class.getResource("/views/registerToQueueConfirmation.fxml"));
+            VBox dialogRoot = loader.load();
 
+            ConfirmationDialogController controller = loader.getController();
+            controller.setLessonId(lesson.getLessonId());
+            controller.setDayOfWeek(lesson.getDayOfWeek());
+            controller.getSubjectName().setText(lesson.getSubjectName());
+            controller.getSubgroup().setText(lesson.getSubgroupType().name());
+            controller.getStartTime().setText(lesson.getStartTime().toString());
+
+            Stage dialogStage = new Stage();
+            dialogStage.setResizable(false);
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.setTitle("Register to Queue");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(menuButton.getScene().getWindow());
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

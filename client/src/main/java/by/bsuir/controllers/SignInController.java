@@ -3,6 +3,7 @@ package by.bsuir.controllers;
 import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.models.dto.Pair;
 import by.bsuir.models.dto.Student;
+import by.bsuir.services.SignInService;
 import by.bsuir.utils.WindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -53,19 +55,22 @@ public class SignInController {
 
     @FXML
     private void authorize(MouseEvent event) {
-//        try {
-//            signInService.authorizeStudent(this.toStudent());
-//        } catch(AuthorizationException e) {
-//            statusLabel.setText("Неверное имя пользователя или пароль");
-//            return;
-//        }
-//        WindowManager.generateWindow("/views/schedulePage.fxml",
-//                                    "Schedule",
-//                                    false,
-//                                    true,
-//                                    new Pair<>(650, 400),
-//                                    event);
-//        scheduleService.populateScheduleTable("el_Pablo");
+        try {
+            SignInService.authorizeStudent(this.toStudent());
+        } catch (AuthorizationException e) {
+            statusLabel.setText("Неверное имя пользователя или пароль");
+            return;
+        }
+        catch(IOException | ClassNotFoundException e) {
+            statusLabel.setText("Ошибка сервера");
+            return;
+        }
+        WindowManager.generateWindow("/views/schedulePage.fxml",
+                                    "Schedule",
+                                    false,
+                                    true,
+                                    new Pair<>(650, 400),
+                                    event);
     }
 
     @FXML
@@ -95,7 +100,7 @@ public class SignInController {
     }
 
     private Student toStudent() {
-        return new Student(null, null, username.getText(), password.getText(), null);
+        return new Student(null, null, username.getText(), password.getText(), null, null);
     }
 
 }
