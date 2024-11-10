@@ -64,11 +64,6 @@
         <VBox fx:id="sideMenuActions">
 
         </VBox>
-
-        <HBox fx:id="deleteAccount" onMouseClicked="#showDeleteAccountForm" styleClass="menu-variant">
-            <Label styleClass="delete-icon" text="🗑️" />
-            <Label styleClass="delete-account-label" text="Delete account" />
-        </HBox>
     </VBox>
 
 </AnchorPane>

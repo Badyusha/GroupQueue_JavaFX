@@ -58,6 +58,18 @@ public class ClientRequestHandler implements Runnable {
                         serverResponse.editProfile();
                         break;
                     }
+                    case GET_QUEUE_INFO: {
+                        serverResponse.getQueueInfo();
+                        break;
+                    }
+                    case GET_GROUP_QUEUE: {
+                        serverResponse.getGroupQueue();
+                        break;
+                    }
+                    case BECOME_GROUP_ADMIN: {
+                        serverResponse.becomeGroupAdmin();
+                        break;
+                    }
                     case EXIT: {
                         break;
                     }
@@ -66,7 +78,7 @@ public class ClientRequestHandler implements Runnable {
         } catch(SocketException e) {
             System.out.println("Пользователь вышел...\nВсего " + (--Main.activeUsers) + " активных пользователей\n");
         }
-        catch (Exception e) {
+        catch(Exception e) {
             e.printStackTrace();
         }
     }

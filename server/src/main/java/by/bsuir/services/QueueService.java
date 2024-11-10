@@ -42,11 +42,7 @@ public class QueueService {
 		return combinedResults;
 	}
 
-	public List<GroupQueue> getGroupQueueByLessonId(EncryptedLesson encryptedLesson) {
-		String encryptedLessonId = encryptedLesson.getEncryptedLessonId();
-		String encryptedLessonIdSeed = encryptedLesson.getEncryptedLessonIdSeed();
-		long lessonId = Long.parseLong(EncryptionUtil.decrypt(encryptedLessonId, encryptedLessonIdSeed));
-
+	public List<GroupQueue> getGroupQueueByLessonId(long lessonId) {
 		return queueRepository.getGroupQueueByLessonId(lessonId);
 	}
 

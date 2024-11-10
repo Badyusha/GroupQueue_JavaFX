@@ -7,6 +7,7 @@ import by.bsuir.services.ScheduleService;
 import by.bsuir.tcp.ClientRequest;
 import by.bsuir.tcp.ClientRequestHandler;
 import lombok.Data;
+import lombok.Setter;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public final class StudentSession {
 
     private long studentId;
     private long groupId;
+    private long roleId;
     private String firstName;
     private String lastName;
     private String username;
@@ -38,13 +40,12 @@ public final class StudentSession {
         this.groupId = 0;
     }
 
-    public void setUpFields(long studentId, long groupId) throws IOException {
-        Student student = ScheduleService.getStudentInfo(studentId);
+    public void setUpFields() throws IOException {
+        Student student = ScheduleService.getStudentInfo(this.studentId);
         if(student == null) {
             throw new IOException("Student is null");
         }
-        this.studentId = studentId;
-        this.groupId = groupId;
+        this.roleId = student.getRoleId();
         this.firstName = student.getFirstName();
         this.lastName = student.getLastName();
         this.username = student.getUsername();

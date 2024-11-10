@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER" fx:controller="by.bsuir.controllers.MyQueuesController">
+    <TableView fx:id="queueTable" prefWidth="800">
+        <columns>
+            <TableColumn fx:id="subjectNameColumn" text="Subject name" minWidth="100" />
+            <TableColumn fx:id="dateColumn" text="Date" minWidth="100" />
+            <TableColumn fx:id="startTimeColumn" text="Start time" minWidth="100" />
+            <TableColumn fx:id="subgroupColumn" text="Subgroup" minWidth="100" />
+            <TableColumn fx:id="passingLabsColumn" text="Passing labs" minWidth="100" />
+            <TableColumn fx:id="registrationStatusColumn" text="Registration status" minWidth="150" />
+            <TableColumn fx:id="numberInQueueColumn" text="Number in Q" minWidth="100" />
+            <TableColumn fx:id="sortTypeColumn" text="Sort type" minWidth="100" />
+        </columns>
+    </TableView>
+</VBox>

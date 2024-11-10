@@ -21,6 +21,7 @@ public class SignInService {
             throw new AuthorizationException("Invalid username or password");
         }
 
-        StudentSession.getInstance().setUpFields(authorizedStudent.getStudentId(), authorizedStudent.getGroupId());
+        StudentSession.getInstance().setStudentId(authorizedStudent.getStudentId());
+        StudentSession.getInstance().setGroupId(authorizedStudent.getGroupId());
     }
 }

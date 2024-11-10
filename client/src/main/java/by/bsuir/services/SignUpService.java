@@ -25,7 +25,9 @@ public class SignUpService {
         Object object = ClientRequest.input.readObject();
         if(object instanceof Student) {
             Student registeredStudent = (Student) object;
-            StudentSession.getInstance().setUpFields(registeredStudent.getStudentId(), registeredStudent.getGroupId());
+
+            StudentSession.getInstance().setStudentId(registeredStudent.getStudentId());
+            StudentSession.getInstance().setGroupId(registeredStudent.getGroupId());
             return RegistrationState.OK;
         }
         return (RegistrationState) object;

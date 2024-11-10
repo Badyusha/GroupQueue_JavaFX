@@ -20,6 +20,12 @@ public class Student implements Serializable {
 	private RoleType roleType;
 	private Long roleId;
 
+	public Student(long studentId, Long groupId, Long roleId) {
+		this.studentId = studentId;
+		this.groupId = groupId;
+		this.roleId = roleId;
+	}
+
 	public Student(long studentId, String firstName, String lastName, String username, String password) {
 		this.studentId = studentId;
 		this.firstName = firstName;
@@ -49,7 +55,8 @@ public class Student implements Serializable {
 				   String password,
 				   Long groupId,
 				   Integer groupNumber,
-				   RoleType roleType) {
+				   RoleType roleType,
+				   Long roleId) {
 		this.studentId = studentId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -58,6 +65,7 @@ public class Student implements Serializable {
 		this.groupId = groupId;
 		this.groupNumber = groupNumber;
 		this.roleType = roleType;
+		this.roleId = roleId;
 	}
 
 	public StudentEntity toStudentEntity(Long personId) {

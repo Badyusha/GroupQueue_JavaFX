@@ -76,7 +76,8 @@ public interface StudentRepository extends CrudRepository<StudentEntity, Long> {
 						p.password,
 						null,
 						group.number,
-						role.name
+						role.name,
+						role.id
 					)
 					FROM StudentEntity s
 					INNER JOIN PersonEntity p

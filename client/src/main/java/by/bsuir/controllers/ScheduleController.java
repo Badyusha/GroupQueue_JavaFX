@@ -1,6 +1,7 @@
 package by.bsuir.controllers;
 
 import by.bsuir.MainClient;
+import by.bsuir.enums.ServerResponseType;
 import by.bsuir.enums.entityAttributes.RoleType;
 import by.bsuir.models.dto.*;
 import by.bsuir.services.ScheduleService;
@@ -10,6 +11,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -17,16 +19,27 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import lombok.RequiredArgsConstructor;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ScheduleController {
     private boolean isMenuVisible = false;
+
+    @FXML
+    private Label fullName;
+    @FXML
+    private Label username;
+    @FXML
+    private Label groupNumber;
+    @FXML
+    private Label roleType;
 
     @FXML
     private VBox sideMenu;
@@ -52,15 +65,29 @@ public class ScheduleController {
     private VBox sideMenuActions;
 
     public void initialize() {
+        try {
+            StudentSession.getInstance().setUpFields();
+        } catch (IOException e) {
+            showAlert("Ошибка", "Не удалось проинициализировать страницу");
+        }
         sideMenu.setVisible(false);
-
-        RoleType role = StudentSession.getInstance().getRoleType();
         sideMenuActions.getChildren().clear();
+
+        String firstName = StudentSession.getInstance().getFirstName();
+        String lastName = StudentSession.getInstance().getLastName();
+        String username = StudentSession.getInstance().getUsername();
+        int groupNumber = StudentSession.getInstance().getGroupNumber();
+        RoleType roleType = StudentSession.getInstance().getRoleType();
+
+        this.fullName.setText(firstName + " " + lastName);
+        this.username.setText(username);
+        this.groupNumber.setText(String.valueOf(groupNumber));
+        this.roleType.setText(roleType.toString());
 
         addButtonToSideMenu("Edit Profile", this::editProfile);
         addButtonToSideMenu("My Queues", this::showMyQueues);
 
-        switch (role) {
+        switch (roleType) {
             case USER -> addButtonToSideMenu("Become Group Admin", this::becomeGroupAdmin);
             case GROUP_ADMIN -> addButtonToSideMenu("Choose Sort Type", this::chooseSortType);
             case SUDO -> {
@@ -117,12 +144,48 @@ public class ScheduleController {
 
     private void showMyQueues() {
         hideSideMenu();
-        System.out.println("show queues");
+
+        try {
+            List<QueueInfo> queueInfos = ScheduleService.getQueueInfo();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/myQueues.fxml"));
+            Parent root = loader.load();
+
+            MyQueuesController controller = loader.getController();
+            controller.setQueueData(queueInfos);
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Available Queues");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.show();
+        } catch (Exception e) {
+            showAlert("Ошибка сервера", "Не удалось проинициализировать страницу");
+        }
     }
 
     private void becomeGroupAdmin() {
         hideSideMenu();
-        System.out.println("become admin");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText("Вы точно хотите стать админом группы?\nВам будет доступна возможность выбирать тип очереди");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(!result.get().equals(ButtonType.OK)) {
+            return;
+        }
+
+        try {
+            ServerResponseType serverResponseType = ScheduleService.becomeGroupAdmin();
+            if(serverResponseType.equals(ServerResponseType.ERROR)) {
+                throw new Exception();
+            }
+            showAlert("Успешно", "Запрос успешно отправлен");
+        } catch (Exception e) {
+            showAlert("Ошибка", "Ошибка обработки запроса");
+        }
     }
 
     private void chooseSortType() {
@@ -250,7 +313,7 @@ public class ScheduleController {
     public void hideSideMenu() {
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), sideMenu);
         slideOut.setFromX(0);
-        slideOut.setToX(-sideMenu.getWidth());
+        slideOut.setToX(-(sideMenu.getWidth() * 2));
         slideOut.setOnFinished(event -> {
             sideMenu.setVisible(false);
             isMenuVisible = false;
@@ -269,10 +332,6 @@ public class ScheduleController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if(!result.get().equals(ButtonType.OK)) {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Ошибка записи");
-            error.setHeaderText("Не удалось записаться");
-            error.showAndWait();
             return;
         }
         long studentId = StudentSession.getInstance().getStudentId();

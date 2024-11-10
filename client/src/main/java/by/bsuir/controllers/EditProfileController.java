@@ -54,7 +54,7 @@ public class EditProfileController {
 
         ServerResponseType serverResponseType = (ServerResponseType) ClientRequest.input.readObject();
         if(serverResponseType.equals(ServerResponseType.OK)) {
-            showAlert(Alert.AlertType.INFORMATION, "Успешно",
+            showAlert(Alert.AlertType.CONFIRMATION, "Успешно",
                     "Профиль успешно обновлен");
             return;
         }

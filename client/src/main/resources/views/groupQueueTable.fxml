@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.bsuir.controllers.GroupQueueController">
+    <TableView fx:id="groupQueueTable" prefWidth="600">
+        <columns>
+            <TableColumn fx:id="numberInQueueColumn" text="Number in Queue" prefWidth="100"/>
+            <TableColumn fx:id="lastNameColumn" text="Last Name" prefWidth="150"/>
+            <TableColumn fx:id="firstNameColumn" text="First Name" prefWidth="150"/>
+            <TableColumn fx:id="usernameColumn" text="Username" prefWidth="100"/>
+            <TableColumn fx:id="passingLabsColumn" text="Passing Labs" prefWidth="100"/>
+        </columns>
+    </TableView>
+</VBox>
