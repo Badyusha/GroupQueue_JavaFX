@@ -20,6 +20,14 @@ public class Student implements Serializable {
 	private RoleType roleType;
 	private Long roleId;
 
+	public Student(long studentId, String firstName, String lastName, String username, String password) {
+		this.studentId = studentId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+	}
+
 	public Student(String firstName,
 				   String lastName,
 				   String username,

@@ -1,10 +1,13 @@
 package by.bsuir.controllers;
 
 import by.bsuir.MainClient;
+import by.bsuir.enums.entityAttributes.RoleType;
 import by.bsuir.models.dto.*;
 import by.bsuir.services.ScheduleService;
 import by.bsuir.utils.StudentSession;
+import by.bsuir.utils.WindowManager;
 import javafx.animation.TranslateTransition;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -45,18 +48,110 @@ public class ScheduleController {
     private VBox saturdayContainer;
     @FXML
     private VBox sundayContainer;
+    @FXML
+    private VBox sideMenuActions;
 
-    public void initialize() throws IOException, ClassNotFoundException {
+    public void initialize() {
         sideMenu.setVisible(false);
-        Schedule schedule = ScheduleService.getSchedule();
-        if(schedule != null) {
-            populateScheduleTable(ScheduleService.getSchedule());
-            return;
+
+        RoleType role = StudentSession.getInstance().getRoleType();
+        sideMenuActions.getChildren().clear();
+
+        addButtonToSideMenu("Edit Profile", this::editProfile);
+        addButtonToSideMenu("My Queues", this::showMyQueues);
+
+        switch (role) {
+            case USER -> addButtonToSideMenu("Become Group Admin", this::becomeGroupAdmin);
+            case GROUP_ADMIN -> addButtonToSideMenu("Choose Sort Type", this::chooseSortType);
+            case SUDO -> {
+                addButtonToSideMenu("Choose Sort Type", this::chooseSortType);
+                addButtonToSideMenu("Requests", this::showRequests);
+            }
         }
-        JOptionPane.showMessageDialog(null,
-                "Проверьте подключение к интернету",
-                "Connection error",
-                JOptionPane.ERROR_MESSAGE);
+        addButtonToSideMenu("Sign Out", this::signOut);
+        sideMenu.setVisible(true);  // Make the menu visible
+
+        try {
+            Schedule schedule = ScheduleService.getSchedule();
+            if (schedule != null) {
+                populateScheduleTable(schedule);
+                return;
+            }
+        } catch (Exception e) {
+            showAlert("Ошибка подключения", "Не удалось проинициализировать страницу");
+        }
+        showAlert("Ошибка подключения", "Проверьте подключение к интернету");
+    }
+
+    @FXML
+    public void toggleSideMenu() {
+        if (isMenuVisible) {
+            hideSideMenu();
+        } else {
+            showSideMenu();
+        }
+    }
+
+    private void editProfile() {
+        hideSideMenu();
+
+        FXMLLoader loader = null;
+        VBox dialogRoot = null;
+        try {
+            loader = new FXMLLoader(MainClient.class.getResource("/views/editProfile.fxml"));
+            dialogRoot = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        EditProfileController controller = loader.getController();
+        controller.getFirstNameField().setText(StudentSession.getInstance().getFirstName());
+        controller.getLastNameField().setText(StudentSession.getInstance().getLastName());
+        controller.getUsernameField().setText(StudentSession.getInstance().getUsername());
+        controller.getGroupNumberLabel().setText(Integer.toString(StudentSession.getInstance().getGroupNumber()));
+
+        showModalWindow(dialogRoot);
+
+        initialize();
+    }
+
+    private void showMyQueues() {
+        hideSideMenu();
+        System.out.println("show queues");
+    }
+
+    private void becomeGroupAdmin() {
+        hideSideMenu();
+        System.out.println("become admin");
+    }
+
+    private void chooseSortType() {
+        hideSideMenu();
+        System.out.println("choose sort type");
+    }
+
+    private void showRequests() {
+        hideSideMenu();
+        System.out.println("show requests");
+    }
+
+    private void signOut() {
+        hideSideMenu();
+        System.out.println("sign out");
+    }
+
+
+    private void showAlert(String title, String headerText) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.showAndWait();
+    }
+
+    private void addButtonToSideMenu(String text, Runnable action) {
+        Button button = new Button(text);
+        button.setOnAction(event -> action.run());
+        sideMenuActions.getChildren().add(button);
     }
 
     public void populateScheduleTable(Schedule schedule) {
@@ -143,15 +238,6 @@ public class ScheduleController {
         return lessonCard;
     }
 
-    @FXML
-    public void toggleSideMenu() {
-        if (isMenuVisible) {
-            hideSideMenu();
-        } else {
-            showSideMenu();
-        }
-    }
-
     public void showSideMenu() {
         sideMenu.setVisible(true);
         TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), sideMenu);
@@ -178,36 +264,53 @@ public class ScheduleController {
 
     private void removeStudentFromQueue(long lessonId) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение");
+        alert.setHeaderText("Вы точно хотите покинуть очередь?");
+
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.get() == ButtonType.OK) {
-            long studentId = StudentSession.getInstance().getStudentId();
-            ScheduleService.removeStudentFromQueue(studentId, lessonId);
+        if(!result.get().equals(ButtonType.OK)) {
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle("Ошибка записи");
+            error.setHeaderText("Не удалось записаться");
+            error.showAndWait();
+            return;
         }
-        // TODO
-        // update schedule
+        long studentId = StudentSession.getInstance().getStudentId();
+        ScheduleService.removeStudentFromQueue(studentId, lessonId);
+
+        initialize();
     }
 
     private void registerStudentToQueue(Lesson lesson) {
+        FXMLLoader loader = null;
+        VBox dialogRoot = null;
         try {
-            FXMLLoader loader = new FXMLLoader(MainClient.class.getResource("/views/registerToQueueConfirmation.fxml"));
-            VBox dialogRoot = loader.load();
-
-            ConfirmationDialogController controller = loader.getController();
-            controller.setLessonId(lesson.getLessonId());
-            controller.setDayOfWeek(lesson.getDayOfWeek());
-            controller.getSubjectName().setText(lesson.getSubjectName());
-            controller.getSubgroup().setText(lesson.getSubgroupType().name());
-            controller.getStartTime().setText(lesson.getStartTime().toString());
-
-            Stage dialogStage = new Stage();
-            dialogStage.setResizable(false);
-            dialogStage.setScene(new Scene(dialogRoot));
-            dialogStage.setTitle("Register to Queue");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(menuButton.getScene().getWindow());
-            dialogStage.showAndWait();
+            loader = new FXMLLoader(MainClient.class.getResource("/views/registerToQueueConfirmation.fxml"));
+            dialogRoot = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // TODO make code below another method to use it in editProfile etc dialog windows
+        ConfirmationDialogController controller = loader.getController();
+        controller.setLessonId(lesson.getLessonId());
+        controller.setDayOfWeek(lesson.getDayOfWeek());
+        controller.getSubjectName().setText(lesson.getSubjectName());
+        controller.getSubgroup().setText(lesson.getSubgroupType().name());
+        controller.getStartTime().setText(lesson.getStartTime().toString());
+
+        showModalWindow(dialogRoot);
+
+        initialize();
+    }
+
+    private void showModalWindow(VBox dialogRoot) {
+        Stage dialogStage = new Stage();
+        dialogStage.setResizable(false);
+        dialogStage.setScene(new Scene(dialogRoot));
+        dialogStage.setTitle("Register to Queue");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(menuButton.getScene().getWindow());
+        dialogStage.showAndWait();
     }
 }

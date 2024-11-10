@@ -10,18 +10,16 @@ import java.net.SocketException;
 
 public class ClientRequestHandler implements Runnable {
     private final ServerResponse serverResponse = Main.springContext.getBean(ServerResponse.class);
-    private Socket clientSocket = null;
     public static ObjectInputStream input;
     public static ObjectOutputStream output;
 
     public ClientRequestHandler(Socket clientSocket) {
         try {
-            this.clientSocket = clientSocket;
             input = new ObjectInputStream(clientSocket.getInputStream());
             output = new ObjectOutputStream(clientSocket.getOutputStream());
         }
         catch(Exception e) {
-            //
+            System.err.println("Unable to get IO streams");
         }
     }
 
@@ -50,6 +48,14 @@ public class ClientRequestHandler implements Runnable {
                     }
                     case REMOVE_STUDENT_FROM_QUEUE: {
                         serverResponse.removeStudentFromQueue();
+                        break;
+                    }
+                    case GET_STUDENT_INFO: {
+                        serverResponse.getStudentInfo();
+                        break;
+                    }
+                    case EDIT_STUDENT_PROFILE: {
+                        serverResponse.editProfile();
                         break;
                     }
                     case EXIT: {

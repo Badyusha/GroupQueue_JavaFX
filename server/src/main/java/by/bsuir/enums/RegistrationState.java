@@ -2,7 +2,6 @@ package by.bsuir.enums;
 
 public enum RegistrationState {
     OK,
-    ERROR,
     EMPTY_FIELDS,
     INCORRECT_USERNAME_OR_PASSWORD,
     GROUP_NOT_EXISTS,

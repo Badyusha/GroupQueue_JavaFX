@@ -5,10 +5,13 @@ import by.bsuir.enums.RegistrationState;
 import by.bsuir.models.dto.Student;
 import by.bsuir.utils.StudentSession;
 import by.bsuir.tcp.ClientRequest;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.Optional;
 
 public class SignUpService {
     public static RegistrationState registerStudent(Student student) throws IOException,
@@ -36,10 +39,10 @@ public class SignUpService {
             }
             case GROUP_NOT_EXISTS: {
                 statusLabel.setText("Группа с таким номером не существует");
-                JOptionPane.showMessageDialog(null,
-                        "Проверьте подключение к интернету",
-                        "Connection error",
-                        JOptionPane.ERROR_MESSAGE);
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Ошибка подключения");
+                error.setHeaderText("Проверьте подключение к интернету");
+                error.showAndWait();
                 break;
             }
             case USERNAME_EXISTS: {

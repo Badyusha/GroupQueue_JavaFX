@@ -11,6 +11,8 @@ import by.bsuir.utils.EncryptionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -72,7 +74,7 @@ public class StudentService {
 		return studentRepository.getStudentDtoByStudentId(studentId);
 	}
 
-	public void editProfile(long studentId, Student student) {
+	public void editProfile(long studentId, Student student) throws IOException {
 		PersonEntity personEntity = personRepository.getPersonByStudentId(studentId);
 
 		fillInPerson(personEntity, student);
@@ -81,11 +83,17 @@ public class StudentService {
 			personEntity.setPassword(EncryptionUtil.hashData(student.getPassword()));
 		}
 
-		personRepository.save(personEntity);
+		try {
+			personRepository.save(personEntity);
+		} catch(Exception e) {
+			throw new IOException();
+		}
 	}
 
 	public void deleteStudentByStudentId(long studentId) {
+		long personId = studentRepository.getPersonIdByStudentId(studentId);
 		studentRepository.deleteById(studentId);
+		personRepository.deleteById(personId);
 	}
 
 	public String getStudentRoleByStudentId(long studentId) {

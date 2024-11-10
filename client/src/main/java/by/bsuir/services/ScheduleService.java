@@ -2,9 +2,11 @@ package by.bsuir.services;
 
 import by.bsuir.enums.ClientRequestType;
 import by.bsuir.enums.RegistrationState;
+import by.bsuir.enums.ServerResponseType;
 import by.bsuir.models.dto.Pair;
 import by.bsuir.models.dto.PreQueue;
 import by.bsuir.models.dto.Schedule;
+import by.bsuir.models.dto.Student;
 import by.bsuir.tcp.ClientRequestHandler;
 import by.bsuir.utils.StudentSession;
 import by.bsuir.tcp.ClientRequest;
@@ -29,13 +31,24 @@ public class ScheduleService {
         return (RegistrationState) ClientRequest.input.readObject();
     }
 
-    public static RegistrationState removeStudentFromQueue(long studentId, long lessonId) {
+    public static ServerResponseType removeStudentFromQueue(long studentId, long lessonId) {
         try {
             ClientRequest.sendRequestType(ClientRequestType.REMOVE_STUDENT_FROM_QUEUE);
             ClientRequest.output.writeObject(new PreQueue(studentId, lessonId));
         } catch (IOException e) {
-            return RegistrationState.ERROR;
+            return ServerResponseType.ERROR;
         }
-        return RegistrationState.OK;
+        return ServerResponseType.OK;
+    }
+
+    public static Student getStudentInfo(long studentId) {
+        try {
+            ClientRequest.sendRequestType(ClientRequestType.GET_STUDENT_INFO);
+            ClientRequest.output.writeObject(studentId);
+
+            return (Student) ClientRequest.input.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
     }
 }

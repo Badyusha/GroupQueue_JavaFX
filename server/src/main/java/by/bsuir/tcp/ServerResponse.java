@@ -1,6 +1,7 @@
 package by.bsuir.tcp;
 
 import by.bsuir.enums.RegistrationState;
+import by.bsuir.enums.ServerResponseType;
 import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.exceptions.entityExceptions.QueueException;
 import by.bsuir.exceptions.entityExceptions.ScheduleException;
@@ -77,5 +78,21 @@ public class ServerResponse {
     public void removeStudentFromQueue() throws IOException, ClassNotFoundException {
         PreQueue preQueue = (PreQueue) ClientRequestHandler.input.readObject();
         preQueueService.removeStudentFromPreQueueByLessonId(preQueue.getStudentId(), preQueue.getLessonId());
+    }
+
+    public void getStudentInfo() throws IOException, ClassNotFoundException {
+        long studentId = (long) ClientRequestHandler.input.readObject();
+        Student studentInfo = studentService.getStudentInfo(studentId);
+        ClientRequestHandler.output.writeObject(studentInfo);
+    }
+
+    public void editProfile() throws IOException {
+        try {
+            Student student = (Student) ClientRequestHandler.input.readObject();
+            studentService.editProfile(student.getStudentId(), student);
+            ClientRequestHandler.output.writeObject(ServerResponseType.OK);
+        } catch(IOException | ClassNotFoundException e) {
+            ClientRequestHandler.output.writeObject(ServerResponseType.ERROR);
+        }
     }
 }

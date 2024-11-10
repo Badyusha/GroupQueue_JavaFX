@@ -14,6 +14,13 @@ public interface StudentRepository extends CrudRepository<StudentEntity, Long> {
 	StudentEntity getStudentByUsername(String username);
 
 	@Query(value = """
+					SELECT s.personId
+					FROM StudentEntity s
+					WHERE s.id = ?1
+					""")
+	long getPersonIdByStudentId(long studentId);
+
+	@Query(value = """
 					SELECT s.roleId
 					FROM StudentEntity s
 					WHERE s.id = ?1
