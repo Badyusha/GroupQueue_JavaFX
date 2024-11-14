@@ -1,4 +1,4 @@
-package by.bsuir.tcp;
+package by.bsuir.utils.tcp;
 
 import by.bsuir.enums.ClientRequestType;
 

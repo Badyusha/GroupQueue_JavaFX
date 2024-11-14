@@ -3,7 +3,7 @@ package by.bsuir.controllers;
 import by.bsuir.enums.entityAttributes.SortType;
 import by.bsuir.models.dto.GroupQueue;
 import by.bsuir.models.dto.QueueInfo;
-import by.bsuir.services.ScheduleService;
+import by.bsuir.services.ControllerRequestsService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,12 +16,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class MyQueuesController {
 
@@ -84,7 +82,7 @@ public class MyQueuesController {
         });
         registrationStatusColumn.setCellValueFactory(cellData -> {
             Integer numberInQueue = cellData.getValue().getNumberInQueue();
-            return new SimpleStringProperty( (numberInQueue != null && numberInQueue != 0) ? "Not finished" : "Finished");
+            return new SimpleStringProperty( (numberInQueue != null && numberInQueue != 0) ? "Finished" : "Not finished");
         });
         numberInQueueColumn.setCellValueFactory(cellData -> {
             Integer numberInQueue = cellData.getValue().getNumberInQueue();
@@ -96,7 +94,7 @@ public class MyQueuesController {
 
     private void showGroupQueueDetails(long lessonId) {
         try {
-            List<GroupQueue> groupQueues = ScheduleService.getGroupQueue(lessonId);
+            List<GroupQueue> groupQueues = ControllerRequestsService.getGroupQueue(lessonId);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/groupQueueTable.fxml"));
             Parent root = loader.load();
 

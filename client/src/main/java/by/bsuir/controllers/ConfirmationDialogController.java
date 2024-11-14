@@ -3,7 +3,7 @@ package by.bsuir.controllers;
 import by.bsuir.enums.RegistrationState;
 import by.bsuir.enums.entityAttributes.DayOfWeek;
 import by.bsuir.models.dto.PreQueue;
-import by.bsuir.services.ScheduleService;
+import by.bsuir.services.ControllerRequestsService;
 import by.bsuir.utils.StudentSession;
 import by.bsuir.utils.WindowManager;
 import javafx.event.Event;
@@ -14,10 +14,7 @@ import javafx.scene.control.TextField;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class ConfirmationDialogController {
     @FXML
@@ -79,7 +76,7 @@ public class ConfirmationDialogController {
         long studentId = StudentSession.getInstance().getStudentId();
         PreQueue preQueue = new PreQueue(studentId, lessonId, startTime.getText(), dayOfWeek, passingLabsBytes);
 
-        RegistrationState registrationState = ScheduleService.registerStudentIntoQueue(preQueue);
+        RegistrationState registrationState = ControllerRequestsService.registerStudentIntoQueue(preQueue);
         if(registrationState.equals(RegistrationState.OK)) {
             WindowManager.closeWindow(event);
             return;

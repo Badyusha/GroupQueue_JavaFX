@@ -1,4 +1,4 @@
-package by.bsuir.tcp;
+package by.bsuir.utils.tcp;
 
 import by.bsuir.Main;
 import by.bsuir.enums.ClientRequestType;
@@ -68,6 +68,26 @@ public class ClientRequestHandler implements Runnable {
                     }
                     case BECOME_GROUP_ADMIN: {
                         serverResponse.becomeGroupAdmin();
+                        break;
+                    }
+                    case GET_GROUP_SCHEDULES: {
+                        serverResponse.getGroupSchedules();
+                        break;
+                    }
+                    case CHANGE_SORT_TYPE: {
+                        serverResponse.changeSortType();
+                        break;
+                    }
+                    case GET_REQUESTS: {
+                        serverResponse.getRequests();
+                        break;
+                    }
+                    case ACCEPT_REQUEST: {
+                        serverResponse.acceptRequest();
+                        break;
+                    }
+                    case DECLINE_REQUEST: {
+                        serverResponse.declineRequest();
                         break;
                     }
                     case EXIT: {

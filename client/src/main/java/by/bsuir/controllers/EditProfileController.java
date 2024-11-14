@@ -3,7 +3,7 @@ package by.bsuir.controllers;
 import by.bsuir.enums.ClientRequestType;
 import by.bsuir.enums.ServerResponseType;
 import by.bsuir.models.dto.Student;
-import by.bsuir.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ClientRequest;
 import by.bsuir.utils.StudentSession;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

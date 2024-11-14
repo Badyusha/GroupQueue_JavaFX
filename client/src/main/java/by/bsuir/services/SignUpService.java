@@ -4,14 +4,11 @@ import by.bsuir.enums.ClientRequestType;
 import by.bsuir.enums.RegistrationState;
 import by.bsuir.models.dto.Student;
 import by.bsuir.utils.StudentSession;
-import by.bsuir.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ClientRequest;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.util.Optional;
 
 public class SignUpService {
     public static RegistrationState registerStudent(Student student) throws IOException,

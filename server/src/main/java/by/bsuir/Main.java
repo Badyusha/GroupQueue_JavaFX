@@ -1,7 +1,7 @@
 package by.bsuir;
 
-import by.bsuir.tcp.ClientRequestHandler;
-import by.bsuir.tcp.ServerSocketInfo;
+import by.bsuir.utils.tcp.ClientRequestHandler;
+import by.bsuir.utils.tcp.ServerSocketInfo;
 import by.bsuir.utils.fabrics.SpringBeanControllerFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;

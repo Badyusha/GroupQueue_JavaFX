@@ -17,4 +17,9 @@ public class Request implements Serializable {
 	private RoleType roleType;
 	private int groupNumber;
 	private RequestType requestType;
+
+	public Request(RequestType requestType, long studentId) {
+		this.requestType = requestType;
+		this.studentId = studentId;
+	}
 }

@@ -1,7 +1,7 @@
 package by.bsuir;
 
-import by.bsuir.tcp.ServerSocketInfo;
-import by.bsuir.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ServerSocketInfo;
+import by.bsuir.utils.tcp.ClientRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

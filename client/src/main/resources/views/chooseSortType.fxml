@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="by.bsuir.controllers.ChooseSortTypeController">
+    <Button fx:id="refreshPage" contentDisplay="RIGHT" onMouseClicked="#initialize" styleClass="menu-button" text="Refresh page" textAlignment="CENTER" />
+    <TableView fx:id="lessonsTable" prefWidth="600" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="subjectNameColumn" text="Subject Name"/>
+            <TableColumn fx:id="subgroupColumn" text="Subgroup"/>
+            <TableColumn fx:id="dateColumn" text="Date"/>
+            <TableColumn fx:id="startTimeColumn" text="Start Time"/>
+            <TableColumn fx:id="sortTypeColumn" text="Sort Type"/>
+        </columns>
+    </TableView>
+</VBox>

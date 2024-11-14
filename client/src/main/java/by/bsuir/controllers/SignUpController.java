@@ -1,10 +1,7 @@
 package by.bsuir.controllers;
 
 import by.bsuir.enums.RegistrationState;
-import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.exceptions.EmptyObjectException;
-import by.bsuir.exceptions.GroupNotExistsException;
-import by.bsuir.exceptions.PasswordsNotMatchesException;
 import by.bsuir.models.dto.Pair;
 import by.bsuir.models.dto.Student;
 import by.bsuir.services.SignUpService;
@@ -19,8 +16,6 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor

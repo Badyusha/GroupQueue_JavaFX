@@ -1,5 +1,6 @@
-package by.bsuir.tcp;
+package by.bsuir.utils.tcp;
 
+import by.bsuir.enums.ClientRequestType;
 import by.bsuir.enums.RegistrationState;
 import by.bsuir.enums.ServerResponseType;
 import by.bsuir.enums.entityAttributes.PermissionType;
@@ -9,7 +10,6 @@ import by.bsuir.exceptions.entityExceptions.ScheduleException;
 import by.bsuir.models.dto.*;
 import by.bsuir.repo.PermissionRepository;
 import by.bsuir.services.*;
-import com.sun.scenario.effect.impl.state.LinearConvolveRenderState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -119,5 +119,42 @@ public class ServerResponse {
         }
         requestService.sendBecomeGroupAdmin(student.getStudentId());
         ClientRequestHandler.output.writeObject(ServerResponseType.OK);
+    }
+
+    public void getGroupSchedules() throws IOException, ClassNotFoundException {
+        long groupId = (long) ClientRequestHandler.input.readObject();
+        List<GroupSchedule> groupSchedules = scheduleService.getGroupSchedulesByGroupId(groupId);
+        ClientRequestHandler.output.writeObject(groupSchedules);
+    }
+
+    public void changeSortType() throws IOException {
+        try {
+            long roleId = (long) ClientRequestHandler.input.readObject();
+            if(permissionRepository.isActionAllowed(PermissionType.SHOW_BECOME_GROUP_ADMIN_REQUESTS, roleId)) {
+                ClientRequestHandler.output.writeObject(ServerResponseType.ERROR);
+                return;
+            }
+            ClientRequestHandler.output.writeObject(ServerResponseType.OK);
+
+            GroupSchedule groupSchedule = (GroupSchedule) ClientRequestHandler.input.readObject();
+            lessonService.changeSortType(groupSchedule);
+            ClientRequestHandler.output.writeObject(ServerResponseType.OK);
+        } catch(Exception e) {
+            ClientRequestHandler.output.writeObject(ServerResponseType.ERROR);
+        }
+    }
+
+    public void getRequests() throws IOException {
+        ClientRequestHandler.output.writeObject(requestService.getRequests());
+    }
+
+    public void acceptRequest() throws IOException, ClassNotFoundException {
+        Request request = (Request) ClientRequestHandler.input.readObject();
+        requestService.acceptBecomeGroupAdminRequest(request);
+    }
+
+    public void declineRequest() throws IOException, ClassNotFoundException {
+        Request request = (Request) ClientRequestHandler.input.readObject();
+        requestService.declineBecomeGroupAdminRequest(request);
     }
 }

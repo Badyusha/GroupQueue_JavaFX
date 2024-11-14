@@ -4,16 +4,14 @@ import by.bsuir.enums.ClientRequestType;
 import by.bsuir.enums.RegistrationState;
 import by.bsuir.enums.ServerResponseType;
 import by.bsuir.models.dto.*;
-import by.bsuir.tcp.ClientRequestHandler;
-import by.bsuir.tcp.ServerResponse;
 import by.bsuir.utils.StudentSession;
-import by.bsuir.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ClientRequestHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ScheduleService {
+public class ControllerRequestsService {
     public static Schedule getSchedule() throws IOException, ClassNotFoundException {
         ClientRequest.sendRequestType(ClientRequestType.GET_SCHEDULE);
 
@@ -74,5 +72,52 @@ public class ScheduleService {
                                         null,
                                         StudentSession.getInstance().getRoleId()));
         return (ServerResponseType) ClientRequest.input.readObject();
+    }
+
+    public static List<GroupSchedule> getGroupSchedules(long groupId) throws IOException, ClassNotFoundException {
+        ClientRequest.sendRequestType(ClientRequestType.GET_GROUP_SCHEDULES);
+        ClientRequest.output.writeObject(groupId);
+
+        return (List<GroupSchedule>) ClientRequest.input.readObject();
+    }
+
+    public static ServerResponseType changeSortType(GroupSchedule groupSchedule) throws IOException, ClassNotFoundException {
+        ClientRequest.sendRequestType(ClientRequestType.CHANGE_SORT_TYPE);
+
+        ClientRequest.output.writeObject(StudentSession.getInstance().getRoleId());
+
+        ServerResponseType serverResponseType = (ServerResponseType) ClientRequest.input.readObject();
+        if(serverResponseType.equals(ServerResponseType.ERROR)) {
+            return ServerResponseType.ERROR;
+        }
+
+        ClientRequest.output.writeObject(groupSchedule);
+
+        return (ServerResponseType) ClientRequest.input.readObject();
+    }
+
+    public static List<Request> getRequests() throws IOException, ClassNotFoundException {
+        ClientRequest.sendRequestType(ClientRequestType.GET_REQUESTS);
+        return (List<Request>) ClientRequest.input.readObject();
+    }
+
+    public static ServerResponseType acceptRequest(Request request) {
+        try {
+            ClientRequest.sendRequestType(ClientRequestType.ACCEPT_REQUEST);
+            ClientRequest.output.writeObject(request);
+        } catch (IOException e) {
+            return ServerResponseType.ERROR;
+        }
+        return ServerResponseType.OK;
+    }
+
+    public static ServerResponseType declineRequest(Request request) {
+        try {
+            ClientRequest.sendRequestType(ClientRequestType.DECLINE_REQUEST);
+            ClientRequest.output.writeObject(request);
+        } catch (IOException e) {
+            return ServerResponseType.ERROR;
+        }
+        return ServerResponseType.OK;
     }
 }

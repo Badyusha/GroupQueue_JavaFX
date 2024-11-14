@@ -19,4 +19,9 @@ public class GroupSchedule implements Serializable {
 	private LocalDate date;
 	private LocalTime startTime;
 	private SortType sortType;
+
+	public GroupSchedule(long lessonId, SortType sortType) {
+		this.lessonId = lessonId;
+		this.sortType = sortType;
+	}
 }

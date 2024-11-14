@@ -4,7 +4,7 @@ import by.bsuir.enums.ClientRequestType;
 import by.bsuir.exceptions.AuthorizationException;
 import by.bsuir.models.dto.Student;
 import by.bsuir.utils.StudentSession;
-import by.bsuir.tcp.ClientRequest;
+import by.bsuir.utils.tcp.ClientRequest;
 
 import java.io.IOException;
 

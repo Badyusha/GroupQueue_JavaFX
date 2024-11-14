@@ -2,11 +2,13 @@ package by.bsuir.controllers;
 
 import by.bsuir.MainClient;
 import by.bsuir.enums.ServerResponseType;
+import by.bsuir.enums.entityAttributes.RequestType;
 import by.bsuir.enums.entityAttributes.RoleType;
 import by.bsuir.models.dto.*;
-import by.bsuir.services.ScheduleService;
+import by.bsuir.services.ControllerRequestsService;
 import by.bsuir.utils.StudentSession;
 import by.bsuir.utils.WindowManager;
+import by.bsuir.utils.tcp.ClientRequestHandler;
 import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -23,7 +25,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import lombok.RequiredArgsConstructor;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -89,17 +90,21 @@ public class ScheduleController {
 
         switch (roleType) {
             case USER -> addButtonToSideMenu("Become Group Admin", this::becomeGroupAdmin);
-            case GROUP_ADMIN -> addButtonToSideMenu("Choose Sort Type", this::chooseSortType);
+            case GROUP_ADMIN -> addButtonToSideMenu("Choose sort type", this::chooseSortType);
             case SUDO -> {
-                addButtonToSideMenu("Choose Sort Type", this::chooseSortType);
+                addButtonToSideMenu("Choose sort type", this::chooseSortType);
                 addButtonToSideMenu("Requests", this::showRequests);
             }
         }
-        addButtonToSideMenu("Sign Out", this::signOut);
+
+        Button signOutButton = new Button("Sign Out");
+        signOutButton.setOnAction(event -> signOut(event));
+        sideMenuActions.getChildren().add(signOutButton);
+
         sideMenu.setVisible(true);  // Make the menu visible
 
         try {
-            Schedule schedule = ScheduleService.getSchedule();
+            Schedule schedule = ControllerRequestsService.getSchedule();
             if (schedule != null) {
                 populateScheduleTable(schedule);
                 return;
@@ -146,7 +151,7 @@ public class ScheduleController {
         hideSideMenu();
 
         try {
-            List<QueueInfo> queueInfos = ScheduleService.getQueueInfo();
+            List<QueueInfo> queueInfos = ControllerRequestsService.getQueueInfo();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/myQueues.fxml"));
             Parent root = loader.load();
 
@@ -178,7 +183,7 @@ public class ScheduleController {
         }
 
         try {
-            ServerResponseType serverResponseType = ScheduleService.becomeGroupAdmin();
+            ServerResponseType serverResponseType = ControllerRequestsService.becomeGroupAdmin();
             if(serverResponseType.equals(ServerResponseType.ERROR)) {
                 throw new Exception();
             }
@@ -190,16 +195,62 @@ public class ScheduleController {
 
     private void chooseSortType() {
         hideSideMenu();
-        System.out.println("choose sort type");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/chooseSortType.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Choose sort type");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.show();
+        } catch(IOException e) {
+            showAlert("Ошибка сервера", "Не удалось проинициализировать страницу");
+        }
     }
 
     private void showRequests() {
         hideSideMenu();
-        System.out.println("show requests");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/requestsTable.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Available Queues");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.show();
+        } catch (Exception e) {
+            showAlert("Ошибка сервера", "Не удалось проинициализировать страницу");
+        }
     }
 
-    private void signOut() {
+    private void signOut(Event event) {
         hideSideMenu();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(MainClient.class.getResource("/views/authorizationPage.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load(), 600, 400);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.setScene(scene);
+        stage.setTitle("GroupQueue");
+        stage.setResizable(false);
+        stage.show();
+
+        WindowManager.closeWindow(event);
+
+        StudentSession.getInstance().logout();
+
         System.out.println("sign out");
     }
 
@@ -321,10 +372,6 @@ public class ScheduleController {
         slideOut.play();
     }
 
-    public void showDeleteAccountForm(MouseEvent mouseEvent) {
-        // implementation ...
-    }
-
     private void removeStudentFromQueue(long lessonId) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Подтверждение");
@@ -335,7 +382,7 @@ public class ScheduleController {
             return;
         }
         long studentId = StudentSession.getInstance().getStudentId();
-        ScheduleService.removeStudentFromQueue(studentId, lessonId);
+        ControllerRequestsService.removeStudentFromQueue(studentId, lessonId);
 
         initialize();
     }
