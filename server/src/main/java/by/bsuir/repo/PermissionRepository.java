@@ -16,6 +16,7 @@ public interface PermissionRepository extends CrudRepository<PermissionEntity, L
 	int getPermissionCountByPermissionNameRoleId(PermissionType permission, long roleId);
 
 	default boolean isActionAllowed(PermissionType permission, long roleId) {
-		return getPermissionCountByPermissionNameRoleId(permission, roleId) != 1;
+		int res = getPermissionCountByPermissionNameRoleId(permission, roleId);
+		return getPermissionCountByPermissionNameRoleId(permission, roleId) == 1;
 	}
 }

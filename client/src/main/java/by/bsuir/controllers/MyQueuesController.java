@@ -44,6 +44,18 @@ public class MyQueuesController {
 
     @FXML
     public void initialize() {
+        double columnCount = 8;
+        double columnWidth = 1.0 / columnCount;
+
+        subjectNameColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        dateColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        startTimeColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        subgroupColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        passingLabsColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        registrationStatusColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        numberInQueueColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+        sortTypeColumn.prefWidthProperty().bind(queueTable.widthProperty().multiply(columnWidth));
+
         subjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         subjectNameColumn.setCellFactory(new Callback<>() {
             @Override
@@ -92,10 +104,10 @@ public class MyQueuesController {
         sortTypeColumn.setCellValueFactory(new PropertyValueFactory<>("sortType"));
     }
 
-    private void showGroupQueueDetails(long lessonId) {
+    public static void showGroupQueueDetails(long lessonId) {
         try {
             List<GroupQueue> groupQueues = ControllerRequestsService.getGroupQueue(lessonId);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/groupQueueTable.fxml"));
+            FXMLLoader loader = new FXMLLoader(MyQueuesController.class.getResource("/views/groupQueueTable.fxml"));
             Parent root = loader.load();
 
             GroupQueueController controller = loader.getController();

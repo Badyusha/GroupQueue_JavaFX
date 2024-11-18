@@ -2,13 +2,14 @@ package by.bsuir.controllers;
 
 import by.bsuir.MainClient;
 import by.bsuir.enums.ServerResponseType;
-import by.bsuir.enums.entityAttributes.RequestType;
 import by.bsuir.enums.entityAttributes.RoleType;
-import by.bsuir.models.dto.*;
+import by.bsuir.models.dto.DayOfWeekScheduled;
+import by.bsuir.models.dto.Lesson;
+import by.bsuir.models.dto.QueueInfo;
+import by.bsuir.models.dto.Schedule;
 import by.bsuir.services.ControllerRequestsService;
 import by.bsuir.utils.StudentSession;
 import by.bsuir.utils.WindowManager;
-import by.bsuir.utils.tcp.ClientRequestHandler;
 import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -16,7 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -43,11 +43,11 @@ public class ScheduleController {
     private Label roleType;
 
     @FXML
+    public HBox weekScheduleHBox;
+    @FXML
     private VBox sideMenu;
     @FXML
     private Button menuButton;
-    @FXML
-    private HBox weekScheduleHBox;
     @FXML
     private VBox mondayContainer;
     @FXML
@@ -66,6 +66,17 @@ public class ScheduleController {
     private VBox sideMenuActions;
 
     public void initialize() {
+        double columnCount = 7;
+        double columnWidth = 1.0 / columnCount;
+
+        mondayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        tuesdayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        wednesdayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        thursdayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        fridayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        saturdayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+        sundayContainer.prefWidthProperty().bind(weekScheduleHBox.widthProperty().multiply(columnWidth));
+
         try {
             StudentSession.getInstance().setUpFields();
         } catch (IOException e) {
@@ -85,23 +96,21 @@ public class ScheduleController {
         this.groupNumber.setText(String.valueOf(groupNumber));
         this.roleType.setText(roleType.toString());
 
-        addButtonToSideMenu("Edit Profile", this::editProfile);
-        addButtonToSideMenu("My Queues", this::showMyQueues);
+        addButtonToSideMenu("Изменить профиль", this::editProfile);
+        addButtonToSideMenu("Мои очереди", this::showMyQueues);
 
         switch (roleType) {
-            case USER -> addButtonToSideMenu("Become Group Admin", this::becomeGroupAdmin);
-            case GROUP_ADMIN -> addButtonToSideMenu("Choose sort type", this::chooseSortType);
+            case USER -> addButtonToSideMenu("Стать админом группы", this::becomeGroupAdmin);
+            case GROUP_ADMIN -> addButtonToSideMenu("Выбрать тип сортировки", this::chooseSortType);
             case SUDO -> {
-                addButtonToSideMenu("Choose sort type", this::chooseSortType);
-                addButtonToSideMenu("Requests", this::showRequests);
+                addButtonToSideMenu("Выбрать тип сортировки", this::chooseSortType);
+                addButtonToSideMenu("Запросы", this::showRequests);
             }
         }
 
-        Button signOutButton = new Button("Sign Out");
+        Button signOutButton = new Button("Выйти");
         signOutButton.setOnAction(event -> signOut(event));
         sideMenuActions.getChildren().add(signOutButton);
-
-        sideMenu.setVisible(true);  // Make the menu visible
 
         try {
             Schedule schedule = ControllerRequestsService.getSchedule();
@@ -290,7 +299,9 @@ public class ScheduleController {
     }
 
     private void addLessonsToContainer(VBox container, DayOfWeekScheduled daySchedule, String dayOfWeek) {
-        container.getChildren().add(new Label(dayOfWeek + " (" + daySchedule.getDate().toString() + ")"));
+        Label dayOfWeekHeader = new Label(dayOfWeek + " (" + daySchedule.getDate().toString() + ")");
+        container.getStyleClass().add("day-of-week-lesson-header");
+        container.getChildren().add(dayOfWeekHeader);
         if (daySchedule.getLessons() == null) {
             return;
         }
@@ -308,6 +319,10 @@ public class ScheduleController {
         Label subjectNameLabel = new Label(lesson.getSubjectName());
         subjectNameLabel.getStyleClass().add("subject-name");
 
+        // Add Tooltip for full subject name
+        Tooltip subjectTooltip = new Tooltip(lesson.getSubjectFullName());
+        Tooltip.install(subjectNameLabel, subjectTooltip);
+
         Label subgroupLabel = new Label("Subgroup: " + lesson.getSubgroupType());
         subgroupLabel.getStyleClass().add("subgroup-info");
 
@@ -321,36 +336,39 @@ public class ScheduleController {
         registrationButton.setVisible(false);
         Integer numberInQueue = lesson.getNumberInQueue();
 
-        if(lesson.isRegistrationOpen()) {
+        if (lesson.isRegistrationOpen()) {
             registrationButton = new Button("Register");
             registrationButton.setVisible(true);
 
             registrationButton.setOnAction(event -> {
                 registerStudentToQueue(lesson);
             });
-        } if(lesson.isRegisteredInQueue()) {
+        }
+        if (lesson.isRegisteredInQueue()) {
             registrationButton = new Button("Registered\nLeave?");
             registrationButton.setVisible(true);
 
             registrationButton.setOnAction(event -> {
                 removeStudentFromQueue(lesson.getLessonId());
             });
-        } if(numberInQueue != null) {
+        }
+        if (numberInQueue != null) {
             registrationButton = new Button("You are " + numberInQueue + " in Q");
             registrationButton.setVisible(true);
 
             registrationButton.setOnAction(event -> {
-                System.out.println(lesson.getSubjectName() + " --- " + lesson.getLessonId());
+                MyQueuesController.showGroupQueueDetails(lesson.getLessonId());
             });
         }
 
         lessonCard.getChildren().addAll(subjectNameLabel,
-                                        subgroupLabel,
-                                        startTimeLabel,
-                                        dayOfWeekLabel,
-                                        registrationButton);
+                subgroupLabel,
+                startTimeLabel,
+                dayOfWeekLabel,
+                registrationButton);
         return lessonCard;
     }
+
 
     public void showSideMenu() {
         sideMenu.setVisible(true);

@@ -130,7 +130,7 @@ public class ServerResponse {
     public void changeSortType() throws IOException {
         try {
             long roleId = (long) ClientRequestHandler.input.readObject();
-            if(permissionRepository.isActionAllowed(PermissionType.SHOW_BECOME_GROUP_ADMIN_REQUESTS, roleId)) {
+            if(!permissionRepository.isActionAllowed(PermissionType.CHOOSE_SORT_TYPE, roleId)) {
                 ClientRequestHandler.output.writeObject(ServerResponseType.ERROR);
                 return;
             }

@@ -41,3 +41,7 @@
 .not-registered {
     -fx-text-fill: #FF5252; /* Red for not registered */
 }
+
+.day-of-week-lesson-header {
+    -fx-alignment: top-center;
+}
